@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import connectDB from "./database/db.js";
-import router from "./routes/user.route.js";
+import userRouter from "./routes/user.route.js";
+import authRouter from "./routes/auth.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +16,8 @@ app.get("/", (req, res) => {
 });
 
 
-app.use("/api/v1/user", router)
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 
 const startServer = async () => {
