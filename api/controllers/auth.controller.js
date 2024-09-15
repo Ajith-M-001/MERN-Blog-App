@@ -1,15 +1,13 @@
+//api\controllers\auth.controller.js
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
+import { errorHandler } from "../utils/error.js";
 
-export const signIn = (req, res) => {
-  console.log("req", req.body);
-};
-
-export const signUp = async (req, res) => {
+export const signUp = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
-    return res.status(400).json({ message: "Required fields can't be empty" });
+    next(errorHandler(400, "Required fields can't be empty"));
   }
 
   try {
@@ -33,10 +31,12 @@ export const signUp = async (req, res) => {
 
     await newUser.save();
 
-
     res.status(201).json({ user: newUser });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
+export const signIn = (req, res) => {
+  console.log("req", req.body);
+};

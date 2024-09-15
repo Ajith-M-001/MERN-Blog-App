@@ -11,14 +11,21 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/auth", authRouter);
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
-
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/auth", authRouter);
-
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  });
+});
 
 const startServer = async () => {
   try {
