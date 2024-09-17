@@ -1,13 +1,17 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
-import { FaMoon } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleTheme } from "../redux/features/theme/themeSlice";
 
 const Header = () => {
   const location = useLocation();
   const path = location.pathname;
   const currentUser = useSelector((state) => state.user.CurrentUser);
+  const { theme } = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
+  console.log("currentUser", currentUser);
 
   return (
     <Navbar className="border-b-2">
@@ -30,8 +34,13 @@ const Header = () => {
         <IoSearchOutline />
       </Button>
       <div className="flex gap-2 md:order-2">
-        <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
-          <FaMoon />
+        <Button
+          onClick={() => dispatch(toggleTheme())}
+          className="w-12 h-10 hidden sm:inline"
+          color="gray"
+          pill
+        >
+          {theme === "light" ? <FaSun /> : <FaMoon />}
         </Button>
 
         {currentUser ? (
@@ -39,7 +48,7 @@ const Header = () => {
             arrowIcon={false}
             inline
             label={
-              <Avatar alt="profilepic" img={currentUser.profilePic} rounded />
+              <Avatar alt="profilepic" img={currentUser?.profilePic} rounded />
             }
           >
             <Dropdown.Header>
