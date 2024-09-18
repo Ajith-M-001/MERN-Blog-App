@@ -4,13 +4,14 @@ dotenv.config();
 import connectDB from "./database/db.js";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.get("/", (req, res) => {
