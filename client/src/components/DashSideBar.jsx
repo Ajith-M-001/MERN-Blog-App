@@ -15,6 +15,7 @@ const DashSideBar = () => {
       setTab(tabFromURL);
     }
   }, [location.search]);
+
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
@@ -25,6 +26,7 @@ const DashSideBar = () => {
               icon={HiUser}
               label="User"
               labelColor="dark"
+              as="div"
             >
               Profile
             </Sidebar.Item>

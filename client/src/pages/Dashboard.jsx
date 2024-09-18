@@ -14,14 +14,15 @@ const Dashboard = () => {
       setTab(tabFromURL);
     }
   }, [location.search]);
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* sidebar */}
       <div className="md:w-56">
         <DashSideBar />
       </div>
-      {/* profile  */}
-      <div>{tab === "profile" && <DashProfile />}</div>
+      {/* profile */}
+      <div className="md:w-full">{tab === "profile" && <DashProfile />}</div>
     </div>
   );
 };
