@@ -11,7 +11,6 @@ export const updateUser = async (req, res, next) => {
   const { Id } = req.params;
   const { password, username, email, profilePic } = req.body;
 
-  console.log(req.params, userId);
 
   if (Id !== userId) {
     return next(errorHandler(403, "You are not allowed to update this user"));
