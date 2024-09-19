@@ -11,7 +11,6 @@ export const updateUser = async (req, res, next) => {
   const { Id } = req.params;
   const { password, username, email, profilePic } = req.body;
 
-
   if (Id !== userId) {
     return next(errorHandler(403, "You are not allowed to update this user"));
   }
@@ -53,6 +52,25 @@ export const updateUser = async (req, res, next) => {
 
     const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  if (req.user.userId !== req.params.Id) {
+    return next(errorHandler(403, "You are not allowed to delete this user"));
+  }
+
+  try {
+    const user = await User.findById(req.params.Id);
+    if (!user) {
+      return next(errorHandler(404, "user not fopund"));
+    }
+
+    await User.findByIdAndDelete(req.params.Id);
+
+    res.status(200).json({ message: "User has been deleted" });
   } catch (error) {
     next(error);
   }
