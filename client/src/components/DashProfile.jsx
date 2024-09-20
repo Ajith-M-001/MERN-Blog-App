@@ -20,6 +20,7 @@ import {
   signOutSuccess,
 } from "../redux/features/user/userSlice";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 const DashProfile = () => {
   const { CurrentUser, error } = useSelector((state) => state.user);
@@ -254,6 +255,19 @@ const DashProfile = () => {
           {isImageUploading ? "Uploading..." : "Update"}
         </Button>
       </form>
+      {CurrentUser.isAdmin && (
+        <Link to="/create-post">
+          <Button
+            type="button"
+            gradientDuoTone="purpleToPink"
+            className="w-full mt-3"
+            outline
+            disabled={isImageUploading}
+          >
+            Create a Post
+          </Button>
+        </Link>
+      )}
       <div className="text-red-500 flex justify-between mt-5">
         <span className="cursor-pointer" onClick={() => setShowModel(true)}>
           Delete account
