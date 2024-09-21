@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import DashSideBar from "../components/DashSideBar";
 import DashProfile from "../components/DashProfile";
+import DashPosts from "../components/DashPosts";
 
 const Dashboard = () => {
   const location = useLocation();
-  const [tab, setTab] = useState("");
+  const [tab, setTab] = useState("profile"); // Set default tab to "profile"
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -17,12 +18,18 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      {/* sidebar */}
+      {/* Sidebar */}
       <div className="md:w-56">
         <DashSideBar />
       </div>
-      {/* profile */}
-      <div className="md:w-full">{tab === "profile" && <DashProfile />}</div>
+      {/* Profile or Posts depending on the tab */}
+      <div className="md:w-full">
+        {tab === "profile" && <DashProfile />}
+        {tab === "posts" && <DashPosts />}
+        {!["profile", "posts"].includes(tab) && (
+          <div className="p-4">Invalid tab. Please select a valid option.</div>
+        )}
+      </div>
     </div>
   );
 };

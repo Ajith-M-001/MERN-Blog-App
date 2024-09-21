@@ -1,9 +1,9 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiUser } from "react-icons/hi";
+import { HiDocumentText, HiUser } from "react-icons/hi";
 import { HiMiniArrowRightOnRectangle } from "react-icons/hi2"; // Correct icon name
 import { Link, useLocation, useNavigate } from "react-router-dom"; // Correct useNavigate import
-import { useDispatch } from "react-redux"; // Correct useDispatch import
+import { useDispatch, useSelector } from "react-redux"; // Correct useDispatch import
 import { signOutSuccess } from "../redux/features/user/userSlice";
 
 const DashSideBar = () => {
@@ -11,6 +11,7 @@ const DashSideBar = () => {
   const [tab, setTab] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { CurrentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -38,18 +39,31 @@ const DashSideBar = () => {
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
-        <Sidebar.ItemGroup>
+        <Sidebar.ItemGroup className="flex flex-col gap-1">
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
               icon={HiUser}
-              label="User"
+              label={CurrentUser.isAdmin ? "Admin" : "User"}
               labelColor="dark"
               as="div"
             >
               Profile
             </Sidebar.Item>
           </Link>
+          {CurrentUser.isAdmin && (
+            <Link to="/dashboard?tab=posts">
+              <Sidebar.Item
+                active={tab === "posts"}
+                icon={HiDocumentText}
+                // label="User"
+                // labelColor="dark"
+                as="div"
+              >
+                Posts
+              </Sidebar.Item>
+            </Link>
+          )}
           <div onClick={handleSignOut}>
             <Sidebar.Item
               icon={HiMiniArrowRightOnRectangle} // Use correct icon name
