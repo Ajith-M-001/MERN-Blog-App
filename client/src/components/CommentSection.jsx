@@ -2,28 +2,28 @@
 import { Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
+
 const CommentSection = ({ postId }) => {
   const { CurrentUser } = useSelector((state) => state.user);
-  const [comments, setComments] = useState("");
-  const [getComment, setGetComment] = useState([]);
+  const [comments, setComments] = useState(""); // For new comment input
+  const [getComment, setGetComment] = useState([]); // For fetching all comments
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getCommentsbyPost = async (id) => {
+    const getCommentsByPost = async (id) => {
       try {
         const res = await fetch(`/api/v1/comment/getPostComments/${id}`);
         const data = await res.json();
-        setGetComment(data.comments);
+        setGetComment(data.comments || []);
       } catch (error) {
         console.log(error);
       }
     };
 
-    getCommentsbyPost(postId);
+    getCommentsByPost(postId);
   }, [postId, comments]);
-
-  console.log(getComment);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,23 +36,50 @@ const CommentSection = ({ postId }) => {
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           comment: comments,
           postId,
           userId: CurrentUser._id,
         }),
       });
-      const data = await res.json();
       if (res.ok) {
-        setComments("");
+        setComments(""); // Clear input after submission
       }
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
-    console.log(comments);
   };
+
+  const handleLike = async (commentId) => {
+    console.log(commentId);
+
+    try {
+      if (!CurrentUser) {
+        navigate("/sign-in");
+        return;
+      }
+      const res = await fetch(`/api/v1/comment/likeComment/${commentId}`, {
+        method: "PUT",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setComments(
+          getComment.map((comment) =>
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes: data.likes,
+                  numberOfLikes: data.numberOfLikes,
+                }
+              : comment
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto w-full p-3">
       {CurrentUser ? (
@@ -66,36 +93,31 @@ const CommentSection = ({ postId }) => {
           <Link to={"/dashboard?tab=profile"}>@{CurrentUser.username}</Link>
         </div>
       ) : (
-        <>
-          <div className="text-sm text-teal-500 my-5">
-            You Must Singed In to Comment :
-            <Link
-              className="text-blue-500 hover:underline mx-2"
-              to={"/sign-in"}
-            >
-              Sign In
-            </Link>
-          </div>
-        </>
+        <div className="text-sm text-teal-500 my-5">
+          You must be signed in to comment:{" "}
+          <Link className="text-blue-500 hover:underline mx-2" to="/sign-in">
+            Sign In
+          </Link>
+        </div>
       )}
 
       {CurrentUser && (
         <form
           onSubmit={handleSubmit}
-          className="border border-teal-500 rounded-md p-3 "
+          className="border border-teal-500 rounded-md p-3"
         >
           <Textarea
             value={comments}
             onChange={(e) => setComments(e.target.value)}
             placeholder="Add a comment"
-            rows={"3"}
-            maxLength={"200"}
+            rows="3"
+            maxLength="200"
           />
           <div className="flex justify-between items-center mt-5">
             <p className="text-gray-500 text-sm">
               {200 - comments.length} characters remaining
             </p>
-            <Button type="submit" outline gradientDuoTone={"purpleToBlue"}>
+            <Button type="submit" outline gradientDuoTone="purpleToBlue">
               Submit
             </Button>
           </div>
@@ -103,17 +125,17 @@ const CommentSection = ({ postId }) => {
       )}
 
       {getComment.length === 0 ? (
-        <p className="text-xs  my-5"> No comments yet</p>
+        <p className="text-xs my-5">No comments yet</p>
       ) : (
         <>
           <div className="text-sm my-5 flex items-center gap-1">
-            <p>Commetns :</p>
+            <p>Comments:</p>
             <div className="border border-gray-500 py-1 px-2 rounded-sm">
               <p>{getComment.length}</p>
             </div>
           </div>
           {getComment.map((comment) => (
-            <Comment key={comment._id} comment={comment} />
+            <Comment key={comment._id} comment={comment} onLike={handleLike} />
           ))}
         </>
       )}
