@@ -20,7 +20,7 @@ const DashUsers = () => {
         const data = await res.json();
         console.log(data.userWithOutPassword);
         setUsers(data.userWithOutPassword);
-        if (data.userWithOutPassword.length < 10) {
+        if (data.userWithOutPassword.length <= 10) {
           setShowMore(false);
         }
       } catch (error) {
@@ -41,7 +41,7 @@ const DashUsers = () => {
       const data = await res.json();
       if (res.ok) {
         setUsers((prevUser) => [...prevUser, ...data.userWithOutPassword]);
-        if (data.userWithOutPassword.length < 10) {
+        if (data.userWithOutPassword.length <= 10) {
           setShowMore(false);
         }
       }
