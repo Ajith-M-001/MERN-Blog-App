@@ -1,11 +1,29 @@
+/* eslint-disable react/prop-types */
 import { Button, Textarea } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
+import Comment from "./Comment";
 const CommentSection = ({ postId }) => {
   const { CurrentUser } = useSelector((state) => state.user);
   const [comments, setComments] = useState("");
+  const [getComment, setGetComment] = useState([]);
+
+  useEffect(() => {
+    const getCommentsbyPost = async (id) => {
+      try {
+        const res = await fetch(`/api/v1/comment/getPostComments/${id}`);
+        const data = await res.json();
+        setGetComment(data.comments);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCommentsbyPost(postId);
+  }, [postId, comments]);
+
+  console.log(getComment);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,6 +100,22 @@ const CommentSection = ({ postId }) => {
             </Button>
           </div>
         </form>
+      )}
+
+      {getComment.length === 0 ? (
+        <p className="text-xs  my-5"> No comments yet</p>
+      ) : (
+        <>
+          <div className="text-sm my-5 flex items-center gap-1">
+            <p>Commetns :</p>
+            <div className="border border-gray-500 py-1 px-2 rounded-sm">
+              <p>{getComment.length}</p>
+            </div>
+          </div>
+          {getComment.map((comment) => (
+            <Comment key={comment._id} comment={comment} />
+          ))}
+        </>
       )}
     </div>
   );
