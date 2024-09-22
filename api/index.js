@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.route.js";
 import postRouter from "./routes/post.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import commentRouter from "./routes/comment.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/post", postRouter);
+app.use("/api/v1/comment", commentRouter);
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
