@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import DashSideBar from "../components/DashSideBar";
 import DashProfile from "../components/DashProfile";
 import DashPosts from "../components/DashPosts";
+import DashUsers from "../components/DashUsers";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -26,7 +27,8 @@ const Dashboard = () => {
       <div className="md:w-full">
         {tab === "profile" && <DashProfile />}
         {tab === "posts" && <DashPosts />}
-        {!["profile", "posts"].includes(tab) && (
+        {tab === "users" && <DashUsers />}
+        {!["profile", "posts","users"].includes(tab) && (
           <div className="p-4">Invalid tab. Please select a valid option.</div>
         )}
       </div>

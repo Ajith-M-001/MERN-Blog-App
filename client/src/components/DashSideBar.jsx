@@ -5,6 +5,7 @@ import { HiMiniArrowRightOnRectangle } from "react-icons/hi2"; // Correct icon n
 import { Link, useLocation, useNavigate } from "react-router-dom"; // Correct useNavigate import
 import { useDispatch, useSelector } from "react-redux"; // Correct useDispatch import
 import { signOutSuccess } from "../redux/features/user/userSlice";
+import { FaUserAlt } from "react-icons/fa";
 
 const DashSideBar = () => {
   const location = useLocation();
@@ -52,17 +53,30 @@ const DashSideBar = () => {
             </Sidebar.Item>
           </Link>
           {CurrentUser.isAdmin && (
-            <Link to="/dashboard?tab=posts">
-              <Sidebar.Item
-                active={tab === "posts"}
-                icon={HiDocumentText}
-                // label="User"
-                // labelColor="dark"
-                as="div"
-              >
-                Posts
-              </Sidebar.Item>
-            </Link>
+            <>
+              <Link to="/dashboard?tab=posts">
+                <Sidebar.Item
+                  active={tab === "posts"}
+                  icon={HiDocumentText}
+                  // label="User"
+                  // labelColor="dark"
+                  as="div"
+                >
+                  Posts
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=users">
+                <Sidebar.Item
+                  active={tab === "users"}
+                  icon={FaUserAlt}
+                  // label="User"
+                  // labelColor="dark"
+                  as="div"
+                >
+                  Users
+                </Sidebar.Item>
+              </Link>
+            </>
           )}
           <div onClick={handleSignOut}>
             <Sidebar.Item
