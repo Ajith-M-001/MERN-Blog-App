@@ -1,4 +1,5 @@
 import Post from "../models/post.model.js";
+import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 
 export const createPost = async (req, res, next) => {
@@ -162,3 +163,5 @@ export const updatePost = async (req, res, next) => {
     next(error);
   }
 };
+
+
