@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom"; // Correct us
 import { useDispatch, useSelector } from "react-redux"; // Correct useDispatch import
 import { signOutSuccess } from "../redux/features/user/userSlice";
 import { FaUserAlt } from "react-icons/fa";
+import { LiaComments } from "react-icons/lia";
 
 const DashSideBar = () => {
   const location = useLocation();
@@ -74,6 +75,17 @@ const DashSideBar = () => {
                   as="div"
                 >
                   Users
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=comment">
+                <Sidebar.Item
+                  active={tab === "comment"}
+                  icon={LiaComments}
+                  // label="User"
+                  // labelColor="dark"
+                  as="div"
+                >
+                  Comments
                 </Sidebar.Item>
               </Link>
             </>

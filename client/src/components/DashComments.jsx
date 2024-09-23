@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Button, Modal, Table } from "flowbite-react";
 import { MdDelete } from "react-icons/md";
-import { GrClose } from "react-icons/gr";
-import { FcCheckmark } from "react-icons/fc";
 
 const DashComments = () => {
   const { CurrentUser } = useSelector((state) => state.user);
@@ -15,7 +13,7 @@ const DashComments = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await fetch("/api/v1/comment/getAllComments"); // Adjusted the endpoint if necessary
+        const res = await fetch(`/api/v1/comment/getcomments`);
         const data = await res.json();
         console.log(data.comments);
         setComments(data.comments);
@@ -23,11 +21,11 @@ const DashComments = () => {
           setShowMore(false);
         }
       } catch (error) {
-        console.log("Error:", error);
+        console.log("error", error);
       }
     };
 
-    // Fetch comments only if CurrentUser exists and is an admin
+    // Fetch posts only if CurrentUser exists and is an admin
     if (CurrentUser?.isAdmin) {
       fetchComments();
     }
@@ -36,22 +34,20 @@ const DashComments = () => {
   const handleShowMore = async () => {
     const startIndex = comments.length;
     try {
-      const res = await fetch(
-        `/api/v1/comment/getMoreComments?startIndex=${startIndex}`
-      );
+      const res = await fetch(`/api/v1/user/getusers?startIndex=${startIndex}`);
       const data = await res.json();
       if (res.ok) {
-        setComments((prevComments) => [...prevComments, ...data.comments]);
+        setComments((prevComment) => [...prevComment, ...data.comments]);
         if (data.comments.length <= 10) {
           setShowMore(false);
         }
       }
     } catch (error) {
-      console.log("Error:", error);
+      console.log("error", error);
     }
   };
 
-  const handleCommentDelete = async () => {
+  const handleCommentDelete = async (commentId) => {
     setShowModal(false);
     try {
       const res = await fetch(
@@ -64,11 +60,11 @@ const DashComments = () => {
       if (res.ok) {
         console.log(data.message);
         setComments((prevComments) =>
-          prevComments.filter((comment) => comment._id !== commentIdToDelete)
+          prevComments.filter((comment) => comment._id !== commentId)
         );
       }
     } catch (error) {
-      console.log("Error:", error);
+      console.log(error.message);
     }
   };
 
@@ -78,12 +74,11 @@ const DashComments = () => {
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
-              <Table.HeadCell>Date Created</Table.HeadCell>
-              <Table.HeadCell>Comment Content</Table.HeadCell>
-              <Table.HeadCell>No of Likes</Table.HeadCell>
-              <Table.HeadCell>Post ID</Table.HeadCell>
-              <Table.HeadCell>User ID</Table.HeadCell>
-              <Table.HeadCell>Admin</Table.HeadCell>
+              <Table.HeadCell>Date created</Table.HeadCell>
+              <Table.HeadCell>Comment content</Table.HeadCell>
+              <Table.HeadCell>no of likes</Table.HeadCell>
+              <Table.HeadCell>postId</Table.HeadCell>
+              <Table.HeadCell>userId</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
@@ -92,18 +87,14 @@ const DashComments = () => {
                   <Table.Cell>
                     {new Date(comment.createdAt).toLocaleDateString()}
                   </Table.Cell>
-                  <Table.Cell>{comment.content}</Table.Cell>
+
+                  <Table.Cell>{comment.comment}</Table.Cell>
                   <Table.Cell>{comment.numberOfLikes}</Table.Cell>
                   <Table.Cell>{comment.postId}</Table.Cell>
                   <Table.Cell>{comment.userId}</Table.Cell>
+
                   <Table.Cell>
-                    {CurrentUser.isAdmin ? (
-                      <FcCheckmark className="text-green-500 text-3xl" />
-                    ) : (
-                      <GrClose className="text-red-500 text-3xl" />
-                    )}
-                  </Table.Cell>
-                  <Table.Cell>
+                    {" "}
                     <span
                       onClick={() => {
                         setShowModal(true);
@@ -112,7 +103,7 @@ const DashComments = () => {
                       className="text-red-500 font-medium hover:underline cursor-pointer"
                     >
                       Delete
-                    </span>
+                    </span>{" "}
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -121,32 +112,34 @@ const DashComments = () => {
           {showMore && (
             <button
               onClick={handleShowMore}
-              className="w-full text-teal-500 self-center mt-2"
+              className="w-full text-teal-500 self-center"
             >
-              Show More
+              Show more
             </button>
           )}
         </>
       ) : (
-        <p>No comments yet</p>
+        <p>No comment yet</p>
       )}
-
       <Modal
         show={showModal}
         onClose={() => setShowModal(false)}
         popup
-        size="md"
+        size={"md"}
       >
         <Modal.Header />
         <Modal.Body>
           <div className="text-center">
-            <MdDelete className="h-14 w-14 text-gray-400 mb-4 mx-auto" />
-            <h3 className="mb-5 text-lg text-gray-500">
+            <MdDelete className="h-14 w-14 text-gray-400 dark:to-green-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
               Are you sure you want to delete this comment?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={handleCommentDelete}>
-                Yes, I'm sure
+              <Button
+                color={"failure"}
+                onClick={() => handleCommentDelete(commentIdToDelete)}
+              >
+                Yes, Im sure
               </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, cancel

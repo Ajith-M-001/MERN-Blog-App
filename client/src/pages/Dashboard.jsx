@@ -4,6 +4,7 @@ import DashSideBar from "../components/DashSideBar";
 import DashProfile from "../components/DashProfile";
 import DashPosts from "../components/DashPosts";
 import DashUsers from "../components/DashUsers";
+import DashComments from "../components/DashComments";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -28,7 +29,8 @@ const Dashboard = () => {
         {tab === "profile" && <DashProfile />}
         {tab === "posts" && <DashPosts />}
         {tab === "users" && <DashUsers />}
-        {!["profile", "posts","users"].includes(tab) && (
+        {tab === "comment" && <DashComments />}
+        {!["profile", "posts", "users", "comment"].includes(tab) && (
           <div className="p-4">Invalid tab. Please select a valid option.</div>
         )}
       </div>
