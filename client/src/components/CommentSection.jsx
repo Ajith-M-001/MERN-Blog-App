@@ -80,6 +80,11 @@ const CommentSection = ({ postId }) => {
     }
   };
 
+  const handleDelete = (commentId) => {
+    setGetComment(getComment.filter((comment) => comment._id !== commentId));
+  };
+
+
   return (
     <div className="max-w-4xl mx-auto w-full p-3">
       {CurrentUser ? (
@@ -135,7 +140,12 @@ const CommentSection = ({ postId }) => {
             </div>
           </div>
           {getComment.map((comment) => (
-            <Comment key={comment._id} comment={comment} onLike={handleLike} />
+            <Comment
+              key={comment._id}
+              comment={comment}
+              onLike={handleLike}
+              onDelete={handleDelete}
+            />
           ))}
         </>
       )}
