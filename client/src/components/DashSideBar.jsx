@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux"; // Correct useDispatch i
 import { signOutSuccess } from "../redux/features/user/userSlice";
 import { FaUserAlt } from "react-icons/fa";
 import { LiaComments } from "react-icons/lia";
+import { MdSpaceDashboard } from "react-icons/md";
 
 const DashSideBar = () => {
   const location = useLocation();
@@ -42,6 +43,19 @@ const DashSideBar = () => {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {CurrentUser && CurrentUser.isAdmin && (
+            <Link to="/dashboard?tab=dashboard">
+              <Sidebar.Item
+                active={tab === "dashboard" || !tab}
+                icon={MdSpaceDashboard}
+                // label="User"
+                // labelColor="dark"
+                as="div"
+              >
+                DashBoard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
