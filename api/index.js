@@ -8,9 +8,11 @@ import postRouter from "./routes/post.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import commentRouter from "./routes/comment.route.js";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const __dirname = path.resolve();
 
 app.use(
   cors({
@@ -27,6 +29,11 @@ app.use("/api/v1/post", postRouter);
 app.use("/api/v1/comment", commentRouter);
 app.get("/", (req, res) => {
   res.send("Hello, World!");
+});
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "inde.html"));
 });
 
 app.use((err, req, res, next) => {
